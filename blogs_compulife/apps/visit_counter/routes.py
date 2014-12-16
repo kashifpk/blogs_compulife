@@ -1,0 +1,10 @@
+from . import APP_NAME, PROJECT_NAME, APP_BASE
+
+
+def application_routes(config):
+    config.add_route(APP_NAME + '.home', '/')
+    config.add_route(APP_NAME + '.details', '/details/{date}')
+    config.add_route(APP_NAME + '.details_range',
+                     '/details/{date_from}/{date_to}')
+    config.add_route(APP_NAME + '.daily_status', '/daily_stats')
+    config.add_static_view('static', 'static', cache_max_age=3600)
