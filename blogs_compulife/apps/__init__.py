@@ -6,8 +6,8 @@ import importlib
 PROJECT_NAME = 'blogs_compulife'
 project_package = importlib.import_module("blogs_compulife")
 
-#from . import app1, app2
+from . import blog
 #enabled_apps = [app1, app2]
 
-enabled_apps = []
+enabled_apps = [blog]
 
