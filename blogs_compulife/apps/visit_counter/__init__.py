@@ -8,3 +8,5 @@ APP_BASE = '%s.apps.%s' % (PROJECT_NAME, APP_NAME)
 from .routes import application_routes
 from .lib import count_visit
 
+# app dependencies
+app_requires = []

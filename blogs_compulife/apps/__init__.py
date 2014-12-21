@@ -6,5 +6,5 @@ import importlib
 PROJECT_NAME = 'blogs_compulife'
 project_package = importlib.import_module("blogs_compulife")
 
-from . import blog, visit_counter
-enabled_apps = [blog, visit_counter]
+from . import blog, visit_counter, geoip
+enabled_apps = [blog, visit_counter, geoip]
