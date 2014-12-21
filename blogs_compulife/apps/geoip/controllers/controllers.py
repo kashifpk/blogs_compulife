@@ -1,10 +1,4 @@
 from pyramid.view import view_config
-
-from ..models import (
-    db,
-    #include your models here
-    )
-
 from .. import APP_NAME, PROJECT_NAME, APP_BASE
 
 
