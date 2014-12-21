@@ -1,15 +1,8 @@
 TODO
 =====
 
-- [X] Date range based details
-- [X] Use Dojo DatePicker instead of Calendar
-- [ ] History population for past dates
-- [ ] Display visit counter
-- [X] DojoX based graphs for visit counts
-    - [ ] Allow setting extra chart info like title, legends etc
-    - [ ] Consider converting charting code to a separate code repo for mako? (Or may be later)
-    - [ ] Multiple series support for Bar, Column and Line charts
-- [ ] GeoIP integration
-- [ ] GeoIP based location grouping (also in graphs)
-- [ ] Detailed documentation
-- [ ] May be convert count_visit function to a decorator?
+- [ ] GeoIP homepage which takes an IP and displays it's available GeoIP info
+- [ ] Library function to access geoip info for an IP or set of IPs
+- [ ] Mako def for displaying geoip resolved flag and on clicking upon the flag should display detailed geoip info in a dojo popup
+
+

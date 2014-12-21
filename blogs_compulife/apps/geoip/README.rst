@@ -14,3 +14,20 @@ For example you can add this as a subtree to your PyCK project like::
 Later if you want to pull latest changes (any updates to the app) you can do::
 
     git subtree pull --prefix myproject/apps/geoip geoip master
+
+
+Setup Instructions
+-------------------
+
+This app requires the geoip2 library from maxmind so after including this app you'll need to run::
+
+    python setup.py develop
+
+Also in your projects ini file (development.ini, production.ini etc) you need to specify the location of
+maxmind's database that you want to use in the "[app:main]" section of the configuration, something like::
+
+    [app:main]
+    
+    # some code
+    
+    geoip_db = /path/to/geoip/db/GeoLite2-City.mmdb
