@@ -1,6 +1,7 @@
 <%inherit file="/base.mako"/>
 <%namespace name="charting" file="charting.mako" />
 <%namespace name="date_search" file="_date_search.mako" />
+<%namespace name="geoip" file="${context.get('PROJECT_NAME')}.apps.geoip$templates/_geoip.mako" />
 
 <%def name="title()">
 Visit records
@@ -33,7 +34,10 @@ ${charting.bar_chart(data=stats, div_name='bar_chart', width='100%', height=str(
     %for rec in records:
       <tr>
         <td>${rec.timestamp}</td>
-        <td>${rec.source_ip}</td>
+        <td>
+          ## r1.country.iso_code.lower()
+          ${rec.source_ip}
+        </td>
         <td>${rec.url}</td>
         <td>${rec.user_agent}</td>
       </tr>
@@ -41,6 +45,7 @@ ${charting.bar_chart(data=stats, div_name='bar_chart', width='100%', height=str(
   </tbody>
 </table>
 
+${geoip.get_flag('pk', 48)}
 
 
 <!--<div>

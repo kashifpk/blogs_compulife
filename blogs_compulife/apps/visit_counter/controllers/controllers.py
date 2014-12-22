@@ -34,7 +34,8 @@ def details(request):
 
     url_stats = Visit.get_url_stats(date_from, date_to, limit=None, sort=False)
 
-    return {'APP_BASE': APP_BASE, 'records': records, 'stats': url_stats,
+    return {'APP_BASE': APP_BASE, 'PROJECT_NAME': PROJECT_NAME,
+            'records': records, 'stats': url_stats,
             'date_from': date_from, 'date_to': date_to}
 
 
