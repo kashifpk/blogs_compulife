@@ -24,15 +24,6 @@ def count_visit(request, url=None):
     db.add(visit)
 
 
-def has_app(app_name):
-    "Checks if a given app is avialbed in project's enabled apps"
-
-    for app in project_package.enabled_apps:
-        if app_name == app.__name__.split('.')[-1]:
-            return True
-
-    return False
-
 #def get_stats(date=None, limit=10):
 #    "Return overall stats or stats for a given date if a date is given"
 #

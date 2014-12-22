@@ -1,5 +1,5 @@
 
-from .. import PROJECT_NAME, project_package
+from .. import PROJECT_NAME, project_package, has_app
 
 
 APP_NAME = 'visit_counter'

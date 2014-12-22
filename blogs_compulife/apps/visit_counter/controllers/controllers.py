@@ -2,9 +2,7 @@ from datetime import datetime
 from pyramid.view import view_config
 from pyramid.exceptions import HTTPNotFound
 from ..models import db, Visit, History
-from .. import APP_NAME, PROJECT_NAME, APP_BASE, project_package
-from ..lib import has_app
-
+from .. import APP_NAME, PROJECT_NAME, APP_BASE, project_package, has_app
 
 
 @view_config(route_name=APP_NAME+'.home', renderer='%s:templates/stats.mako' % APP_BASE)
