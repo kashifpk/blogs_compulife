@@ -53,7 +53,11 @@ class GeoIP(object):
     def _ip_lookup(self, ip_address):
         "Lookup geo info for a single ip"
 
-        response = self.db.city(ip_address)
+        try:
+            response = self.db.city(ip_address)
+        except geoip2.errors.AddressNotFoundError:
+            return None
+
         return response
 
     def ip_lookup(self, ip_request):
@@ -68,3 +72,16 @@ class GeoIP(object):
             response = self._ip_lookup(ip_request)
 
         return response
+
+
+def ip_lookup(request, ip_addresses):
+    "shortcut function for creating GeoIP class and doing ip lookup"
+
+    db_location = request.registry.settings.get('geoip_db', None)
+    if not db_location:
+        raise RuntimeError("GeoIP database location not provided in settings")
+
+    geo = GeoIP(db_location)
+    lookup_response = geo.ip_lookup(ip_addresses)
+
+    return lookup_response
