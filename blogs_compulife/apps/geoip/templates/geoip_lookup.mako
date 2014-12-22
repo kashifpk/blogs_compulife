@@ -1,6 +1,6 @@
 <%inherit file="/base.mako"/>
 
-<%namespace name="geoip" file="geoip.mako" />
+<%namespace name="geoip" file="_geoip.mako" />
 
 <%def name="title()">
 GeoIP Translate
