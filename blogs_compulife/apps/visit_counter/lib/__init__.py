@@ -9,8 +9,6 @@ if PY3:
 else:
     from urlparse import urlparse
 
-from .. import project_package
-
 
 def count_visit(request, url=None):
     "Inserts a record in visits model for current URL (excluding querystring)"
