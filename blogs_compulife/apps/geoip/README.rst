@@ -31,3 +31,8 @@ maxmind's database that you want to use in the "[app:main]" section of the confi
     # some code
     
     geoip_db = /path/to/geoip/db/GeoLite2-City.mmdb
+
+Demo
+----
+
+A working demo of the latest code can be fount at: `tools.compulife.com.pk <http://tools.compulife.com.pk/geoip>`_
