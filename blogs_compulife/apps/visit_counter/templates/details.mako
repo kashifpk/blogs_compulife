@@ -39,7 +39,7 @@ ${charting.bar_chart(data=stats, div_name='bar_chart', width='100%', height=str(
         <td>${rec.timestamp}</td>
         <td>
           ## r1.country.iso_code.lower()
-          %if has_geoip and geo_lookup[rec.source_ip]:
+          %if has_geoip and geo_lookup.gte(rec.source_ip, None):
             <span id="vr_${rec.id}">
               ${geoip.get_flag(geo_lookup[rec.source_ip].country.iso_code.lower(), 24)}
             </span>

@@ -40,7 +40,7 @@ def details(request):
     if has_geoip:
         ip_addresses = []
         for rec in records:
-            if rec.source_ip not in ip_addresses:
+            if rec.source_ip not in ip_addresses and u'unknown' != rec.source_ip:
                 ip_addresses.append(rec.source_ip)
 
         ip_lookup = project_package.apps.geoip.lib.geoip.ip_lookup
