@@ -8,6 +8,7 @@ requires = [
     'pyramid',
     'SQLAlchemy',
     'transaction',
+    'psycopg2',
     'pyramid_mako',
     'pyramid_tm',
     'pyramid_debugtoolbar',
