@@ -1,3 +1,4 @@
+
 <%def name="categories_option_tags(records, name_prefix='', selected_item=None)">
     <% selected_str = "" %>
     %for category in records:

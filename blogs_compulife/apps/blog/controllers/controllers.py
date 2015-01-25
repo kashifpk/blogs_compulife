@@ -1,5 +1,6 @@
 from pyramid.view import view_config
-from pyramid.httpexceptions import HTTPFound, HTTPNotFound, HTTPNotAcceptable
+from pyramid.httpexceptions import (HTTPFound, HTTPNotFound,
+                                    HTTPNotAcceptable, HTTPBadRequest)
 from sqlalchemy.exc import IntegrityError
 
 from ..models import (
@@ -9,7 +10,8 @@ from ..models import (
 
 from .. import APP_NAME, PROJECT_NAME, APP_BASE
 from docutils.core import publish_parts
-from os import path
+from os import path, mkdir
+from glob import glob
 from ...visit_counter.lib import count_visit
 
 
@@ -142,6 +144,7 @@ def save_blog(request):
 
     return {"status": 200, "msg": "OK"}
 
+
 @view_config(route_name=APP_NAME+'.add_blog',
              renderer='%s:templates/add_blog.mako' % APP_BASE)
 def add_blog(request):
@@ -179,6 +182,19 @@ def upload_image(request):
     "Allows saving the blog post via AJAX"
 
     ret = []
+    
+    item_type = request.matchdict['item_type']
+    item_id = request.matchdict['item_id']
+    
+    here = path.dirname(path.abspath(__file__))
+    upload_folder = path.join(here, '../static/{}_images/'.format(item_type))
+    if not path.isdir(upload_folder):
+        return HTTPBadRequest(detail="Upload folder {} not found".format(upload_folder))
+    
+    upload_folder = path.join(upload_folder, item_id)
+    if not path.exists(upload_folder):
+        mkdir(upload_folder)
+    
     if 'POST' == request.method:
         print(request.POST)
         for fieldname, field in request.POST.items():
@@ -188,8 +204,8 @@ def upload_image(request):
                 print(field.filename)
                 print(field.length)
                 print(field.type)
-                here = path.dirname(path.abspath(__file__))
-                filename = path.join(here, '../static/blog_images/', field.filename)
+                
+                filename = path.join(path.realpath(upload_folder), field.filename)
                 print(filename)
                 file_data = field.file.read()
                 open(filename, 'wb').write(file_data)
@@ -213,6 +229,56 @@ def upload_image(request):
     #print $data;
     #return $data;
     return ret
+
+
+@view_config(route_name=APP_NAME+'.file_list', renderer="json")
+def file_list(request):
+    "Return list of files uploaded for given item type and id"
+
+    ret = []
+    
+    item_type = request.matchdict['item_type']
+    item_id = request.matchdict['item_id']
+    
+    here = path.dirname(path.abspath(__file__))
+    upload_folder = path.join(here, '../static/{}_images/'.format(item_type))
+    if not path.isdir(upload_folder):
+        return HTTPBadRequest(detail="Upload folder {} not found".format(upload_folder))
+    
+    upload_folder = path.join(upload_folder, item_id)
+    if path.exists(upload_folder):
+        files = glob(upload_folder + '/*')
+        for filename in files:
+            filename = path.basename(filename)
+            if not filename.startswith('.'):
+                ret.append(filename)
+    
+    return ret
+
+
+@view_config(route_name=APP_NAME+'.edit_content',
+             renderer='%s:templates/edit_content.mako' % APP_BASE)
+def edit_content(request):
+    "Allows saving content"
+
+    item_type = request.matchdict['item_type']
+    item_id = int(request.matchdict['item_id'])
+    
+    if 'POST' == request.method:
+        _save_post(request, rst=True)
+
+    return dict(APP_BASE=APP_BASE, APP_NAME=APP_NAME,
+                item_type=item_type, item_id=item_id)
+
+
+@view_config(route_name=APP_NAME+'.preview_content')
+def preview_content(request):
+    "Allows saving the blog post via AJAX"
+
+    if 'POST' == request.method:
+        _save_post(request, rst=True)
+
+    return {"status": 200, "msg": "OK"}
 
 
 @view_config(route_name=APP_NAME+'.view_blog',

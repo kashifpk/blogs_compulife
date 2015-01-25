@@ -20,6 +20,7 @@ class Category(Base):
     name = Column(Unicode(150), nullable=False)
     slug = Column(Unicode(150), nullable=False)
     description = Column(Unicode(500), nullable=True)
+    header = Column(UnicodeText, nullable=True)
 
     parent_category = Column(Integer, ForeignKey(APP_NAME + "_categories.id"),
                              nullable=True)

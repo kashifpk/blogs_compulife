@@ -14,7 +14,35 @@ New Blog Post
 ## extra_head should be defined in project's base.mako
 
 
+
+<style>
+  textarea {font-family: monospace}
+</style>
+ 
+<script src="${request.static_url(APP_BASE + ':static/common.js')}" type="text/javascript"></script>
+ 
+<script type="application/x-javascript">
+
+function submit_form(blog_action) {
+  var editor = dijit.byId("_body");
+  document.getElementById('body').value = editor.attr("value");
+  document.getElementById('blog_action').value=blog_action;
+  document.blog_form.submit();
+  
+}
+
+function preview(){
+  
+}
+
+</script>
+</%def>
+
+<%def name="extra_head()">
+## extra_head should be defined in project's base.mako
+
 <style type="text/css">
+  @import "${dojo_url_prefix}/dojox/form/resources/UploaderFileList.css";
   @import "${dojo_url_prefix}/dojox/editor/plugins/resources/css/Save.css";
   @import "${dojo_url_prefix}/dojox/editor/plugins/resources/css/Preview.css";
   @import "${dojo_url_prefix}/dojox/editor/plugins/resources/css/ShowBlockNodes.css";
@@ -84,6 +112,10 @@ function submit_form(blog_action) {
   document.getElementById('body').value = editor.attr("value");
   document.getElementById('blog_action').value=blog_action;
   document.blog_form.submit();
+  
+}
+
+function preview(){
   
 }
 
