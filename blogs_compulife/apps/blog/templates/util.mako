@@ -1,3 +1,6 @@
+<%!
+dojo_url_prefix = "http://ajax.googleapis.com/ajax/libs/dojo/1.10.1"
+%>
 
 <%def name="categories_option_tags(records, name_prefix='', selected_item=None)">
     <% selected_str = "" %>
@@ -24,7 +27,7 @@
     <style type="text/css">
       @import "${dojo_url_prefix}/dojox/form/resources/UploaderFileList.css";
     </style>
-    <script type="application/x-javascript"><![CDATA[
+    <script type="application/x-javascript">
     function refresh_file_list() {
       require(["dojo/dom", "dojo/request", "dojo/json", "dojo/_base/array"],
           function(dom, request, JSON, arrayUtil){
@@ -66,7 +69,7 @@
         refresh_file_list(); 
       }
     );
-    //]]>
+    
     </script>
     <div type="file" id="image_uploader" multiple="true" data-dojo-type="dojox/form/Uploader"
          data-dojo-props="
