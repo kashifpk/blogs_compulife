@@ -99,13 +99,22 @@ Edit Content
                 handleAs: "json"
             }).then(function(data){
                 // Display the data sent from the server
-                var html = '<h3>Uploaded files</h3><ol>';
+                var html = '<h3 class="bg-primary">Uploaded files</h3><table class="table table-striped table-hover table-condensed">';
+                var image_exts = ['png', 'jpg', 'jpeg', 'gif', 'bmp'];
                 
                 for (idx in data) {
                   filename = data[idx];
-                  html += '<li>' + filename + '</li>';
+                  file_ext = filename.toLowerCase().split(".").pop();
+                  //console.log(file_ext);
+                  var url = '/${APP_NAME}/static/${item_type}_images/${item_id}/' + filename;
+                  html += '<tr><td><a href="' + url + '">' + url;
+                  if (-1 != image_exts.indexOf(file_ext)) {
+                    html += '<br /><img src="' + url + '" style="width: 100px; height: 50px;" class="img-thumbnail" />';
+                  }
+                  html += '</a></td></tr>';
+                  
                 }
-                html += "</ol>";
+                html += "</table>";
      
                 dom.byId('uploaded_files').innerHTML = html;
             },
