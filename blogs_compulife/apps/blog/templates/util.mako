@@ -71,6 +71,7 @@ dojo_url_prefix = "http://ajax.googleapis.com/ajax/libs/dojo/1.10.1"
     );
     
     </script>
+    <form method="POST">
     <div type="file" id="image_uploader" multiple="true" data-dojo-type="dojox/form/Uploader"
          data-dojo-props="
               label: 'Select files to upload',
@@ -82,5 +83,6 @@ dojo_url_prefix = "http://ajax.googleapis.com/ajax/libs/dojo/1.10.1"
     </div>
     <div id="files" data-dojo-type="dojox/form/uploader/FileList" data-dojo-props="uploaderId: 'image_uploader'"></div>
 
-    <div id="uploaded_files"></div>  
+    <div id="uploaded_files"></div>
+    </form>
 </%def>

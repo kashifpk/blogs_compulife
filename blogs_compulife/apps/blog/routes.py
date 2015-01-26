@@ -11,6 +11,7 @@ def application_routes(config):
     config.add_route(APP_NAME + '.add_blog', '/new')
     config.add_route(APP_NAME + '.add_blog_rst', '/new_rst')
     config.add_route(APP_NAME + '.categories', '/categories')
+    config.add_route(APP_NAME + '.posts', '/posts')
     config.add_route(APP_NAME + '.edit_content', '/edit/{item_type}/{item_id}')
     config.add_route(APP_NAME + '.preview_content', '/preview/{item_type}/{item_id}')
     config.add_route(APP_NAME + '.view_blog', '/*slugs')

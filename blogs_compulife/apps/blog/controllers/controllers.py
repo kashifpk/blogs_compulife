@@ -14,6 +14,9 @@ from os import path, mkdir
 from glob import glob
 from ...visit_counter.lib import count_visit
 
+import logging
+log = logging.getLogger(__name__)
+
 
 @view_config(route_name=APP_NAME+'.home',
              renderer='%s:templates/list.mako' % APP_BASE)
@@ -21,25 +24,126 @@ def my_view(request):
     return {'APP_BASE': APP_BASE}
 
 
+def _get_title_and_content_fields(item_type):
+    
+    content_map = dict(category=('name', 'header'), blog=('title', 'body'))
+    return content_map[item_type]
+
+
+def _get_record(item_type, item_id=None, request=None, msg=''):
+    "Returns Category or Post record based on item type"
+    
+    
+    if not item_id:
+        item_id = request.params.get('id', None)
+        
+        if not item_id:
+            raise HTTPNotFound(msg)
+
+    rec = None
+    type_map = dict(category=Category, blog=Post)
+    
+    if item_type in type_map:
+        rec = db.query(type_map[item_type]).filter_by(id=int(item_id)).first()
+        if not item_id:
+            raise HTTPNotFound(msg)
+
+    return rec
+
+
 @view_config(route_name=APP_NAME+'.categories',
              renderer='%s:templates/categories.mako' % APP_BASE)
 def categories_view(request):
     "Categories custom CRUD interface"
 
-    def _get_category(msg=''):
-        category_id = request.GET.get('category_id', None)
-        if not category_id:
-            category_id = request.POST.get('id', None)
+    action = request.GET.get('action', 'add')
+    category = None
 
-        if not category_id:
+    if 'add' == action and 'POST' == request.method:
+        category = Category(name=request.POST['name'],
+                            slug=request.POST['slug'],
+                            description=request.POST['description'])
+
+        if '' != request.POST.get('parent_category', ''):
+            category.parent_category = int(request.POST['parent_category'])
+
+        db.add(category)
+        request.session.flash("category {name} added!".format(
+            name=category.name))
+
+    elif 'edit' == action and 'GET' == request.method:
+        try:
+            category = _get_record(item_type='category', item_id=None,
+                                   request=request,
+                                   msg="Cannot edit, category not found.")
+        except HTTPNotFound as exp:
+            return exp
+
+    elif 'edit' == action and 'POST' == request.method:
+
+        action = 'add'
+        try:
+            category = _get_record(item_type='category', item_id=None,
+                                   request=request,
+                                   msg="Cannot update, category not found.")
+            
+            category.name = request.POST['name']
+            category.slug = request.POST['slug']
+            category.description = request.POST['description']
+
+            if '' != request.POST.get('parent_category', ''):
+                category.parent_category = int(request.POST['parent_category'])
+
+            request.session.flash("category {name} updated!".format(
+                name=category.name))
+
+        except HTTPNotFound as exp:
+            return exp
+
+    elif 'delete' == action:
+        try:
+            category = _get_record(item_type='category', item_id=None,
+                                   request=request,
+                                   msg="Cannot delete, category not found.")
+            
+            db.delete(category)
+            db.flush()
+
+            request.session.flash("category {name} deleted!".format(
+                name=category.name))
+
+        except HTTPNotFound as exp:
+            return exp
+        except IntegrityError:
+            return HTTPNotAcceptable(
+                detail="Cannot delete category as it has dependent records\n")
+
+    categories = Category.get_tree()
+    log.debug(categories)
+
+    return {'APP_BASE': APP_BASE, 'APP_NAME': APP_NAME,
+            'categories': categories, 'action': action, 'category': category}
+
+
+@view_config(route_name=APP_NAME+'.posts',
+             renderer='%s:templates/posts.mako' % APP_BASE)
+def posts_view(request):
+    "Blog posts custom CRUD interface"
+
+    def _get_post(msg=''):
+        post_id = request.GET.get('post_id', None)
+        if not post_id:
+            post_id = request.POST.get('id', None)
+
+        if not post_id:
             raise HTTPNotFound(msg)
 
-        category = db.query(Category).filter_by(id=int(category_id)).first()
+        post = db.query(Post).filter_by(id=int(post_id)).first()
 
-        if not category:
+        if not post:
             raise HTTPNotFound(msg)
 
-        return category
+        return post
 
     action = request.GET.get('action', 'add')
     category = None
@@ -263,12 +367,35 @@ def edit_content(request):
 
     item_type = request.matchdict['item_type']
     item_id = int(request.matchdict['item_id'])
+    item_content = ''
+    item_title = ''
+    
+    f_title, f_content = _get_title_and_content_fields(item_type)
+    
+    rec = _get_record(item_type, item_id)
+    if rec:
+        item_title = getattr(rec, f_title)
+        item_content = getattr(rec, f_content)
     
     if 'POST' == request.method:
-        _save_post(request, rst=True)
-
+        
+        if request.POST['item_action'] in ('save', 'save_return'):
+            
+            setattr(rec, f_content, request.POST['body'])
+            item_contet = request.POST['body']
+            
+            db.add(rec)
+            request.session.flash("Content updated!")
+            
+            if 'save_return' == request.POST['item_action']:
+                if 'category' == item_type:
+                    return HTTPFound(location=request.route_url(APP_NAME + '.categories'))
+                elif 'blog' == item_type:
+                    return HTTPFound(location=request.route_url(APP_NAME + '.posts'))
+    
     return dict(APP_BASE=APP_BASE, APP_NAME=APP_NAME,
-                item_type=item_type, item_id=item_id)
+                item_content=item_content, item_title=item_title,
+                record=rec, item_type=item_type, item_id=item_id)
 
 
 @view_config(route_name=APP_NAME+'.preview_content')

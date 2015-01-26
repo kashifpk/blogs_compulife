@@ -2,7 +2,7 @@
 <%namespace name="util" file="util.mako" />
 
 <%def name="title()">
-Blog categories
+Blog Posts
 </%def>
 
 <%def name="categories_rows(records, name_prefix='')">
@@ -20,7 +20,7 @@ Blog categories
         <td>${category.description}</td>
         
         <td>
-          <a href="${request.route_url(APP_NAME + '.categories')}?action=edit&id=${category.id}">Edit</a> |
+          <a href="${request.route_url(APP_NAME + '.categories')}?action=edit&category_id=${category.id}">Edit</a> |
           <a href="${request.route_url(APP_NAME + '.edit_content', item_type='category', item_id=category.id)}">Edit Header</a> |
           <a href="${request.route_url(APP_NAME + '.categories')}?action=delete&id=${category.id}" class="text-danger">Delete</a>
         </td>

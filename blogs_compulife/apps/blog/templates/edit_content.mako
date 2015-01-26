@@ -6,7 +6,7 @@ dojo_url_prefix = "http://ajax.googleapis.com/ajax/libs/dojo/1.10.1"
 %>
 
 <%def name="title()">
-Edit Content
+Edit ${item_type.title()} Content
 </%def>
 
 
@@ -76,10 +76,10 @@ Edit Content
         "dojox/editor/plugins/SafePaste",
         ]);
     
-    function submit_form(blog_action) {
+    function submit_form(item_action) {
       var editor = dijit.byId("_content_body");
       document.getElementById('body').value = editor.attr("value");
-      document.getElementById('blog_action').value=blog_action;
+      document.getElementById('item_action').value=item_action;
       document.blog_form.submit();
       
     }
@@ -91,12 +91,16 @@ Edit Content
     </script>
 </%def>
 
-<form action="${request.route_url(APP_NAME + '.preview_content', item_type=item_type, item_id=item_id)}" name="content_form" id="content_form" method="POST" role="form">
+<h1>Editing content for ${item_type} ${item_title}</h1><br />
+
+
+  
 <div class="row">
   <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+    <form action="${request.route_url(APP_NAME + '.edit_content', item_type=item_type, item_id=item_id)}" name="content_form" id="content_form" method="POST" role="form">
     <label for="_content_body">Content</label><br />
     
-    <!--<div data-dojo-type="dijit.Editor" style="width:90%;min-height:100px;" id="_content_body" name="_content_body"
+    <div data-dojo-type="dijit.Editor" style="width:100%;min-height:100px;" id="_content_body"
          data-dojo-props="extraPlugins:['collapsibletoolbar', 'breadcrumb', 'newpage',
                         {name: 'viewSource', stripScripts: true, stripComments: true}, 
                         'showBlockNodes', '||',
@@ -119,22 +123,27 @@ Edit Content
                         {name: 'dojox.editor.plugins.TablePlugins', command: 'tableContextMenu'}, 
                         //{name: 'dijit._editor.plugins.EnterKeyHandling', blockNodeForEnter: 'P'},
                         'safepaste']">
-    </div>-->
+      %if item_content:
+        ${item_content}
+      %endif
+    </div>
+    
+    <input type="hidden" name="body" id="body" value="" />
+    <input type="hidden" name="item_action" id="item_action" value="" />
+    
+    <br /><br />
+    
+    <div class="row">
+      <button class="btn btn-success" onclick="submit_form('save');">Save</button>
+      <button class="btn btn-success" onclick="submit_form('save_return');">Save and Return</button>
+      <button class="btn btn-primary pull-right" onclick="preview();">Preview</button>
+    </div>
+    
+    </form>
   </div>
   <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
     ${util.file_uploader(APP_NAME, item_type, item_id)}
   </div>
 </div>
 
-<input type="hidden" name="body" id="body" value="" />
-<input type="hidden" name="blog_action" id="blog_action" value="" />
 
-<br /><br />
-
-<div class="row">
-  <button class="btn btn-success" onclick="submit_form('save');">Save</button>
-  <button class="btn btn-primary" onclick="submit_form('publish');">Publish</button>
-  <button class="btn btn-info pull-right" onclick="preview();">Preview</button>
-</div>
-
-</form>
