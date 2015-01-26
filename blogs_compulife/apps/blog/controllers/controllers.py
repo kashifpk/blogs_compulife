@@ -130,39 +130,29 @@ def categories_view(request):
 def posts_view(request):
     "Blog posts custom CRUD interface"
 
-    def _get_post(msg=''):
-        post_id = request.GET.get('post_id', None)
-        if not post_id:
-            post_id = request.POST.get('id', None)
-
-        if not post_id:
-            raise HTTPNotFound(msg)
-
-        post = db.query(Post).filter_by(id=int(post_id)).first()
-
-        if not post:
-            raise HTTPNotFound(msg)
-
-        return post
-
     action = request.GET.get('action', 'add')
-    category = None
+    post = None
 
     if 'add' == action and 'POST' == request.method:
-        category = Category(name=request.POST['name'],
-                            slug=request.POST['slug'],
-                            description=request.POST['description'])
-
-        if '' != request.POST.get('parent_category', ''):
-            category.parent_category = int(request.POST['parent_category'])
-
-        db.add(category)
-        request.session.flash("category {name} added!".format(
-            name=category.name))
+        post = Post(title=request.POST['title'],
+                    slug=request.POST['slug'],
+                    keywords=request.POST['keywords'])
+        
+        if 'y' != request.POST.get('comments_allowed', 'n'):
+            post.comments_allowed = False
+    
+        if '' != request.POST.get('category_id', ''):
+            post.category_id = int(request.POST['category_id'])
+        
+        db.add(post)
+        request.session.flash("post {name} added!".format(
+            name=post.title))
 
     elif 'edit' == action and 'GET' == request.method:
         try:
-            category = _get_category("Cannot edit, category not found.")
+            post = _get_record(item_type='post', item_id=None,
+                                   request=request,
+                                   msg="Cannot edit, post not found.")
         except HTTPNotFound as exp:
             return exp
 
@@ -170,42 +160,47 @@ def posts_view(request):
 
         action = 'add'
         try:
-            category = _get_category("Cannot update, category not found.")
+            post = _get_record(item_type='post', item_id=None,
+                                   request=request,
+                                   msg="Cannot update, post not found.")
+            
+            post.name = request.POST['name']
+            post.slug = request.POST['slug']
+            post.description = request.POST['description']
 
-            category.name = request.POST['name']
-            category.slug = request.POST['slug']
-            category.description = request.POST['description']
+            if '' != request.POST.get('parent_post', ''):
+                post.parent_post = int(request.POST['parent_post'])
 
-            if '' != request.POST.get('parent_category', ''):
-                category.parent_category = int(request.POST['parent_category'])
-
-            request.session.flash("category {name} updated!".format(
-                name=category.name))
+            request.session.flash("post {name} updated!".format(
+                name=post.name))
 
         except HTTPNotFound as exp:
             return exp
 
     elif 'delete' == action:
         try:
-            category = _get_category("Cannot delete, category not found.")
-
-            db.delete(category)
+            post = _get_record(item_type='post', item_id=None,
+                                   request=request,
+                                   msg="Cannot delete, post not found.")
+            
+            db.delete(post)
             db.flush()
 
-            request.session.flash("category {name} deleted!".format(
-                name=category.name))
+            request.session.flash("post {name} deleted!".format(
+                name=post.name))
 
         except HTTPNotFound as exp:
             return exp
         except IntegrityError:
             return HTTPNotAcceptable(
-                detail="Cannot delete category as it has dependent records\n")
+                detail="Cannot delete post as it has dependent records\n")
 
     categories = Category.get_tree()
-    print(categories)
-
+    posts = db.query(Post).order_by(Post.updated.desc())
+    
     return {'APP_BASE': APP_BASE, 'APP_NAME': APP_NAME,
-            'categories': categories, 'action': action, 'category': category}
+            'posts': posts, 'categories': categories,
+            'action': action, 'post': post}
 
 
 def _save_post(request, rst):

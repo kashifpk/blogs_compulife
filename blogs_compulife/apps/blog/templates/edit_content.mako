@@ -1,9 +1,11 @@
+<%!
+dojo_url_prefix = "http://ajax.googleapis.com/ajax/libs/dojo/1.10.1"
+skip_dojo_parse_js = True
+%>
 <%inherit file="/base.mako"/>
 <%namespace name="util" file="util.mako" />
 
-<%!
-dojo_url_prefix = "http://ajax.googleapis.com/ajax/libs/dojo/1.10.1"
-%>
+
 
 <%def name="title()">
 Edit ${item_type.title()} Content
@@ -12,6 +14,13 @@ Edit ${item_type.title()} Content
 
 <%def name="extra_head()">
     ## extra_head should be defined in project's base.mako
+    
+    <script src="//ajax.googleapis.com/ajax/libs/dojo/1.10.3/dojo/dojo.js"
+      data-dojo-config="isDebug: true, async: true, parseOnLoad: true"> </script>
+    <script>
+        // Load the editor resource
+        require(["dijit/Editor", "dojo/parser"]);
+    </script>
     
     <style type="text/css">
       @import "${dojo_url_prefix}/dojox/editor/plugins/resources/css/Save.css";

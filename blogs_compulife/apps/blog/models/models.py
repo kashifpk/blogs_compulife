@@ -80,7 +80,7 @@ class Post(Base):
     title = Column(Unicode(150), nullable=False)
     slug = Column(Unicode(150), nullable=False)
     keywords = Column(Unicode(250), default=None)
-    body = Column(UnicodeText, nullable=False)
+    body = Column(UnicodeText, nullable=True)
     rst_source = Column(UnicodeText)
     created = Column(DateTime, default=datetime.utcnow)
     updated = Column(DateTime, default=None)

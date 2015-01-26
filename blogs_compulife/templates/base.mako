@@ -1,6 +1,8 @@
 <%!
 from blogs_compulife.auth import is_allowed
 
+skip_dojo_parse_js = False
+
 auth_links = [('home', 'Home'), ('contact', 'Contact Us'),
               ('admin.admin_index', 'Admin Section'), ('pyckauth_manager', 'Auth Manager')]
 
@@ -27,8 +29,16 @@ auth_links = [('home', 'Home'), ('contact', 'Contact Us'),
   <!-- Dojo -->
   <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/dojo/1.10.1/dojo/resources/dojo.css" type="text/css" charset="utf-8" />
   <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/dojo/1.10.1/dijit/themes/claro/claro.css" type="text/css" charset="utf-8" />
-  <script src="//ajax.googleapis.com/ajax/libs/dojo/1.10.1/dojo/dojo.js" data-dojo-config="isDebug: true, async: true, parseOnLoad: true"></script>
   
+  %if not self.attr.skip_dojo_parse_js:
+  <script src="//ajax.googleapis.com/ajax/libs/dojo/1.10.1/dojo/dojo.js" data-dojo-config="isDebug: true, async: true"></script>
+  <script type="text/javascript">
+        require(['dojo/parser', 'dojo/domReady'],function(parser,ready){ready(function(){
+          parser.parse();
+          });});
+  </script>
+  %endif
+
   ${self.extra_head()}
 </head>
 
