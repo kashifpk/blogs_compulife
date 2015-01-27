@@ -133,7 +133,7 @@ Edit ${item_type.title()} Content
                         //{name: 'dijit._editor.plugins.EnterKeyHandling', blockNodeForEnter: 'P'},
                         'safepaste']">
       %if item_content:
-        ${item_content}
+        ${item_content|n}
       %endif
     </div>
     
