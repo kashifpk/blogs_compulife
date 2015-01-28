@@ -418,9 +418,4 @@ def view_blog(request):
 
     count_visit(request)
 
-    extra_css = None
-    if blog_post.rst_source:   # this is a reStructuredText post
-        extra_css = publish_parts(blog_post.rst_source, writer_name='html')['stylesheet']
-
-    return {'APP_BASE': APP_BASE, 'APP_NAME': APP_NAME, 'blog': blog_post,
-            'extra_css': extra_css}
+    return {'APP_BASE': APP_BASE, 'APP_NAME': APP_NAME, 'blog': blog_post}

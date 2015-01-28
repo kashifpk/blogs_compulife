@@ -7,13 +7,18 @@ ${blog.title|n}
 
 <%def name="extra_head()">
 <meta name="keywords" content="${blog.keywords}" />
-%if extra_css:
-${extra_css|n}
-%endif
+
+<link rel="stylesheet" href="${request.static_url(APP_BASE + ':static/pygments_native.css')}" />
+
 </%def>
 
-<h1>${blog.title|n}</h1>
+%if blog.category.header:
+<div class="row">
+  ${blog.category.header|n}
+</div>
+%endif
 
-<p>
+<div class="row">
+  <h1>${blog.title|n}</h1>
   ${blog.body|n}
-</p>
+</div>

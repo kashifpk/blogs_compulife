@@ -60,6 +60,7 @@ Blog Posts
 <table class="table table-stripped table-hover table-bordered">
   <tr>
     <th>ID</th>
+    <th>Category</th>
     <th>Title</th>
     <th>Slug</th>
     <th>Keywords</th>
@@ -71,6 +72,7 @@ Blog Posts
   %for post in posts:
     <tr>
       <td>${post.id}</td>
+      <td>${post.category.name}</td>
       <td>${post.title}</td>
       <td>${post.slug}</td>
       <td>${post.keywords}</td>

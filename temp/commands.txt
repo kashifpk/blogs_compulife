@@ -1,0 +1,2 @@
+pygmentize -S monokai -f html -a .code > code_style.css
+rst2html.py --stylesheet=code_style.css --syntax-highlight=short code.rst > code.html
